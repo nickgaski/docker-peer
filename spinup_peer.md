@@ -1,35 +1,43 @@
 # Spinup Local Peer Network
-The purpose of this script is to **spinup N number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and commit number you have providing from command line. 
+The purpose of this script is to **spinup "n" number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and commit number provided while executing script.
+
+If the docker interface port (2375) is not assigned/configured properly, you have to execute script using "sudo" to setup DOCKER_OPTS in /etc/defaults/docker file. Script first pulls the fabric-baseimage and tag it as latest then fetches docker environment details and it fetches the membersrvc.yaml file from github (by default from master branch), it creates LOGFILE_<CONTAINERID> and "networkcredential" file.
 
 This script drastically reduces developer/tester time in settingup the fabric developement environment.
 
-Before execute spinup_peer_network.sh script in your system, make sure your system satisfies the below requirements.
+Before execute **spinup_peer_network.sh** script, make sure the host system satisfies the below requirements.
 
 1. Make sure docker is installed if not, Install and configure docker from here https://github.com/hyperledger/fabric/blob/master/devenv/setup.sh
 
 2. If applicable, verify ufw firewall status in non-vagrant environment. Disable firewall if it is enabled.
-  
-  - `sudo ufw status`
-  - `sudo ufw disable`
 
+   `sudo ufw status`
+   `sudo ufw disable`
+  
 3. Clear `iptables` rules (if firewall rules are rejecting docker requests) and re-start docker daemon.
 
-   - `iptables -L` (to view iptable rules)
-   - `iptables -D INPUT 4` (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
+   ```
+   iptables -L (to view iptable rules)
+   iptables -D INPUT 4 (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
+   ```
 
 4. If you do not want to build images manually, skip this step and simply take the image name for the specific commit from above mentioned docker hub account. Build peer and membersrvc images using makefile and provide the image name and commit number in spinup_peer_network.sh script.
 
  Move to directory where the makefile is located (root of the fabric directory)
 
-    - `cd $GOPATH/src/github.com/hyperledger/fabric`
-    - `make images`
+    ```
+    cd $GOPATH/src/github.com/hyperledger/fabric
+    make images
+    ```
 
 # Follow below steps:
 Use below script to spinup peers on gerrit code base (works on any branch)
 
-  - `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
-  - `chmod +x spinup_peer_network.sh`
-  - `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
+  ```
+    curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh
+    chmod +x spinup_peer_network.sh
+    ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
+  ```
   
 ## USAGE:
 
