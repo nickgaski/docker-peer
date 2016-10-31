@@ -164,11 +164,11 @@ Specify the ImageID or Imagename from the output of the above command
 
 `docker run -it <imageID> or <image name> bash`
 
-ex: `docker run -it hyperledge/fabric bash` or `docker run -it 895b42b528a6 bash`
+ex: `docker run -it hyperledge/fabric-peer bash` or `docker run -it 21cb00fb27f4 bash`
 
 ### 3. Saving changes inside Container
 
-Above command takes you to the container, modify any file inside container ex: `core.yaml` file and press `CTRL + P + Q`. In docker, CTRL + P + Q runs the container in background mode or detached mode and automatically exit from the container.
+Above command takes you to the container, modify any file inside container ex: `core.yaml` file and press `CTRL + P + Q`. In docker, CTRL + P + Q runs the container in background mode or in detached mode and automatically exit from the container.
 
 Execute `docker ps` command to see the container running in detached mode. Take the container ID or container name and execute the below command
 
