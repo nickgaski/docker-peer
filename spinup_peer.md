@@ -1,46 +1,40 @@
 # Spinup Local Peer Network
+The purpose of this script is to **spinup N number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and commit number you have providing from command line. 
 
-The purpose of this script is to spinup N number of peers on docker environment. This script spins up the peer and membersrvc in docker containers and uses stable peer, membersrvc & base images from https://hub.docker.com/u/hyperledger/
+This script drastically reduces developer/tester time in settingup the fabric developement environment.
 
 Before execute spinup_peer_network.sh script in your system, make sure your system satisfies the below requirements.
 
-1. Install and configure docker https://github.com/hyperledger/fabric/blob/master/devenv/setup.sh
+1. Make sure docker is installed if not, Install and configure docker from here https://github.com/hyperledger/fabric/blob/master/devenv/setup.sh
 
 2. If applicable, verify ufw firewall status in non-vagrant environment. Disable firewall if it is enabled.
-
+  
   - `sudo ufw status`
   - `sudo ufw disable`
 
 3. Clear `iptables` rules (if firewall rules are rejecting docker requests) and re-start docker daemon.
 
-  - `iptables -L` (to view iptable rules)
-  - `iptables -D INPUT 4` (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
+   - `iptables -L` (to view iptable rules)
+   - `iptables -D INPUT 4` (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
 
-4. If you do not want to build images manually, skip this step and simply take the image name for the specific commit from above mentioned docker hub account. Build peer and membersrvc images in your local machine using makefile and provide the image name and commit number to spinup_peer_network.sh script.
+4. If you do not want to build images manually, skip this step and simply take the image name for the specific commit from above mentioned docker hub account. Build peer and membersrvc images using makefile and provide the image name and commit number in spinup_peer_network.sh script.
 
-   Move to directory where the makefile is located (root of the fabric directory) 
+ Move to directory where the makefile is located (root of the fabric directory)
 
     - `cd $GOPATH/src/github.com/hyperledger/fabric`
     - `make images`
 
-###Spinup peers in local network:
+# Follow below steps:
+Use below script to spinup peers on gerrit code base (works on any branch)
 
-Use below script to spinup peers on gerrit code base:
-
-curl [spinup_peer_network.sh](https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh) file into local machine and follow below instructions to run the script.
-
-Example:
-
-`curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
-
-####Follow below steps:
-
+  - `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
   - `chmod +x spinup_peer_network.sh`
   - `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
   
-####USAGE:
+## USAGE:
+
 ```
-./spinup_peer_network.sh -n <number of peers, N> -s -c <specific Commit> -l <Logging detail level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
+./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
 
 OPTIONS:
 
@@ -56,9 +50,10 @@ OPTIONS:
 ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft
 ```
 **Reference:**
+
 ![4 peer network](peers.PNG)
 
-###Useful Docker Commands:
+### Useful Docker Commands:
 
 1. Kill all containers
   - **docker rm $(docker kill $(docker ps -aq))** (user rm -f to force kill)
@@ -81,7 +76,7 @@ OPTIONS:
 
 ## Testing Chaincode in CLI mode:
 
-Execute below command to get into PEER0 docker container `docker exec -it PEER0 bash` and execute below commands to **Register** an user, **Deploy** chaincode, **Invoke** transaction and **Query** transaction commands from container CLI.
+Execute `docker exec -it PEER0 bash` command to get into PEER0 docker container and execute below commands to **Register** an user, **Deploy** chaincode, **Invoke** and **Query** transactions from PEER0 docker container CLI.
 
 ### Registering user inside PEER0 container:
 
