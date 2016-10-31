@@ -12,34 +12,38 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
 2. If applicable, verify ufw firewall status in non-vagrant environment. Disable firewall if it is enabled.
 
    `sudo ufw status`
+   
    `sudo ufw disable`
   
 3. Clear `iptables` rules (if firewall rules are rejecting docker requests) and re-start docker daemon.
 
-   ```
-   iptables -L (to view iptable rules)
-   iptables -D INPUT 4 (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
-   ```
+
+   `iptables -L` (to view iptable rules)
+   
+   `iptables -D INPUT 4` (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
+ 
 
 4. If you do not want to build images manually, skip this step and simply take the image name for the specific commit from above mentioned docker hub account. Build peer and membersrvc images using makefile and provide the image name and commit number in spinup_peer_network.sh script.
 
  Move to directory where the makefile is located (root of the fabric directory)
 
-    ```
-    cd $GOPATH/src/github.com/hyperledger/fabric
-    make images
-    ```
+
+    `cd $GOPATH/src/github.com/hyperledger/fabric`
+    
+    `make images`
 
 # Follow below steps:
 Use below script to spinup peers on gerrit code base (works on any branch)
 
-  ```
-    curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh
-    chmod +x spinup_peer_network.sh
-    ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
-  ```
+    `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
+    
+    `chmod +x spinup_peer_network.sh`
+    
+    `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
+
   
 ## USAGE:
+
 
 ```
 ./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
@@ -57,6 +61,7 @@ OPTIONS:
  Example: 
 ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft
 ```
+
 **Reference:**
 
 ![4 peer network](peers.PNG)
