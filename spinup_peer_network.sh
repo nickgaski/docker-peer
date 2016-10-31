@@ -1,48 +1,16 @@
 #!/bin/bash
-# ------------------------------------------------------------------
-# TITLE : Spinup local peer network
-# AUTHOR: Ramesh Babu Thoomu & Barry Mosakowski
-# VERSION: 1.0
 
-# DESCRIPTION:
-# The purpose of this script is to spinup peers in local machine using docker.
-# Peers launches on tested peer and membersrvc docker images and latest hyperledger/fabric
-# base image. Script pulls these images from rameshthoomu docker hub account. Take the
-# latest commit of peer and membersrvc from rameshthoomu docker hub account.
-
-# Pre-condition: Install docker in your local machine and start docker daemon
-
-## USAGE:
-# spinup_peer_network.sh [OPTIONS]
-
-# OPTIONS:
-#       -n   - Number of peers to launch
-#       -s   - Enable Security and Privacy
-#       -c   - Specific commit
-#       -l   - Logging detail level
-#       -m   - Consensus mode
-#       -b   - Set batch size, useful when using consensus pbft mode of batch
-#       -f   - Number of tolerated faulty peers, when using pbft for consensus, maximum (n-1)/3
-#       -?|-h - Prints Usage
-#
-# SAMPLE :
-#       ./spinup_peer_network -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -b 1000
-# ------------------------------------------------------------------
+set -e
 
 ARCH=`uname -m`
-
 echo "ARCH value is" $ARCH
-
 if [ $ARCH = "ppc64le" ]
 then
-
     PEER_IMAGE=hyperledger/fabric-peer-ppc64le
     MEMBERSRVC_IMAGE=hyperledger/fabric-membersrvc-ppc64le
     docker pull hyperledger/fabric-ppc64le-baseimage:ppc64le-0.2.0
     docker tag hyperledger/fabric-ppc64le-baseimage:ppc64le-0.2.0 hyperledger/fabric-baseimage:latest
-
 fi
-
 
 if [ "$ARCH" == "x86_64" ]
 then
@@ -50,9 +18,7 @@ then
     MEMBERSRVC_IMAGE=hyperledger/fabric-membersrvc
     docker pull hyperledger/fabric-baseimage:x86_64-0.2.0
     docker tag hyperledger/fabric-baseimage:x86_64-0.2.0 hyperledger/fabric-baseimage:latest
-
 fi
-
 
 if [ "$ARCH" == "s390x" ]
 then
@@ -79,14 +45,14 @@ local IP=$2
 local PORT=$3
 echo "--------> Starting membersrvc Server"
 
-docker run -d --name=caserver -p $CA_PORT:$CA_PORT --volume=/tmp/docker:/tmp/docker -p 50052:7051 -it $MEMBERSRVC_IMAGE:$COMMIT membersrvc
+docker run -d --name=caserver -p $CA_PORT:$CA_PORT -e MEMBERSRVC_CA_LOGGING_SERVER=$LOG_LEVEL --volume=/tmp/docker:/tmp/docker -p 50052:7051 -it $MEMBERSRVC_IMAGE:$COMMIT membersrvc
 
 sleep 10
 
 CA_CONTAINERID=$(docker ps | awk '{print $1}' | awk 'NR==2')
 CA_IP_ADDRESS=$(docker inspect --format '{{.NetworkSettings.IPAddress}}' $CA_CONTAINERID)
 
-echo "--------> Starting hyperledger PEER0"
+echo "--------> Starting PEER0"
 
 docker run -d --name=PEER0 -it \
                 -e CORE_VM_ENDPOINT="http://$IP:$PORT" \
@@ -104,8 +70,8 @@ docker run -d --name=PEER0 -it \
                 -e CORE_PBFT_GENERAL_F=$F \
                 -e CORE_PBFT_GENERAL_BATCHSIZE=$PBFT_BATCHSIZE \
                 -e CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s \
-                -e CORE_PEER_LOGGING_LEVEL=$PEER_LOG \
-                -e CORE_LOGGING_LEVEL=$PEER_LOG \
+                -e CORE_PEER_LOGGING_LEVEL=$LOG_LEVEL \
+                -e CORE_LOGGING_LEVEL=$LOG_LEVEL \
                 -e CORE_VM_DOCKER_TLS_ENABLED=false \
                 --volume=/tmp/docker:/tmp/docker \
                 -e CORE_PEER_PROFILE_ENABLED=true \
@@ -118,7 +84,7 @@ PEER_IP_ADDRESS=$(docker inspect --format '{{.NetworkSettings.IPAddress}}' $CONT
 echo $PEER_IP_ADDRESS
 for (( peer_id=1; $peer_id<"$NUM_PEERS"; peer_id++ ))
 do
-# Storing USER_NAME and SECRET_KEY Values from membersrvc.yaml file: Supports maximum 10 peers
+# Storing USER_NAME and SECRET_KEY Values from membersrvc.yaml file:
 
 USER_NAME=$(awk '/users:/,/^[^ ]/' membersrvc.yaml | egrep "test_vp$((peer_id)):" | cut -d ":" -f 1 | tr -d " ")
 echo $USER_NAME
@@ -128,7 +94,7 @@ REST_PORT=`expr $REST_PORT + 10`
 USE_PORT=`expr $USE_PORT + 2`
 EVENT_PORT=`expr $EVENT_PORT + 2`
 
-echo "--------> Starting hyperledger PEER$peer_id <-----------"
+echo "--------> Starting PEER$peer_id <-----------"
 docker run  -d --name=PEER$peer_id -it \
                 -e CORE_VM_ENDPOINT="http://$IP:$PORT" \
                 -e CORE_PEER_ID="vp"$peer_id \
@@ -146,8 +112,8 @@ docker run  -d --name=PEER$peer_id -it \
                 -e CORE_PBFT_GENERAL_F=$F \
                 -e CORE_PBFT_GENERAL_BATCHSIZE=$PBFT_BATCHSIZE \
                 -e CORE_PBFT_GENERAL_TIMEOUT_REQUEST=10s \
-                -e CORE_PEER_LOGGING_LEVEL=$PEER_LOG \
-                -e CORE_LOGGING_LEVEL=$PEER_LOG \
+                -e CORE_PEER_LOGGING_LEVEL=$LOG_LEVEL \
+                -e CORE_LOGGING_LEVEL=$LOG_LEVEL \
                 --volume=/tmp/docker:/tmp/docker \
                 -e CORE_VM_DOCKER_TLS_ENABLED=false \
                 -e CORE_PEER_PROFILE_ENABLED=true \
@@ -157,9 +123,7 @@ done
 }
 # Peer Setup without security and privacy
 peer_setup()
-
 {
-
     local  NUM_PEERS=$1
     local  IP=$2
     local  PORT=$3
@@ -170,8 +134,8 @@ docker run -d  -it --name=PEER0 \
                 -p $REST_PORT:7050 -p `expr $USE_PORT + 1`:$PEER_gRPC -p `expr $EVENT_PORT + 1`:7053 \
                 -e CORE_PEER_ADDRESSAUTODETECT=true \
                 -e CORE_PEER_LISTENADDRESS=0.0.0.0:$PEER_gRPC \
-                -e CORE_PEER_LOGGING_LEVEL=$PEER_LOG \
-                -e CORE_LOGGING_LEVEL=$PEER_LOG \
+                -e CORE_PEER_LOGGING_LEVEL=$LOG_LEVEL \
+                -e CORE_LOGGING_LEVEL=$LOG_LEVEL \
                 --volume=/tmp/docker:/tmp/docker \
                 -e CORE_VM_DOCKER_TLS_ENABLED=false $PEER_IMAGE:$COMMIT peer node start
 
@@ -193,8 +157,8 @@ docker run -d -it --name=PEER$peer_id \
                 -e CORE_PEER_ADDRESSAUTODETECT=true \
                 -e CORE_PEER_ADDRESS=$IP:`expr $USE_PORT + 1` \
                 -e CORE_PEER_LISTENADDRESS=0.0.0.0:$PEER_gRPC \
-                -e CORE_PEER_LOGGING_LEVEL=$PEER_LOG \
-                -e CORE_LOGGING_LEVEL=$PEER_LOG \
+                -e CORE_PEER_LOGGING_LEVEL=$LOG_LEVEL \
+                -e CORE_LOGGING_LEVEL=$LOG_LEVEL \
                 --volume=/tmp/docker:/tmp/docker \
                 -e CORE_VM_DOCKER_TLS_ENABLED=false $PEER_IMAGE:$COMMIT peer node start
 done
@@ -221,11 +185,9 @@ while getopts "\?hsn:c:l:m:b:f:" option; do
   esac
 done
 
-#kill all running containers and LOGFILES...Yet to implement Log rotate logic
+# kill all running containers and LOGFILES...Yet to implement Log rotate logic
 
-# Docker is not perfect; first we need to unpause any paused containers, before we can kill them.
 docker ps -aq -f status=paused | xargs docker unpause  1>/dev/null 2>&1
-
 docker kill $(docker ps -q) 1>/dev/null 2>&1
 docker ps -aq -f status=exited | xargs docker rm 1>/dev/null 2>&1
 rm -f LOGFILE_*
@@ -236,7 +198,7 @@ rm -rf /var/hyperledger/*
 : ${SECURITY:="N"}
 : ${NUM_PEERS="4"}
 : ${COMMIT="latest"}
-: ${PEER_LOG="debug"}
+: ${LOG_LEVEL="debug"}
 : ${CONSENSUS_MODE="pbft"}
 : ${PBFT_BATCHSIZE="500"}
 : ${F:=$((($NUM_PEERS-1)/3))} # set F default to max possible F value (N-1)/3 here when F was not specified in the command line
@@ -255,7 +217,6 @@ fi
 
 echo "Is Security and Privacy enabled: $SECURITY"
 
-
 echo "--------> Pulling Base Docker Images from Docker Hub"
 
 # Fetching docker environment details
@@ -264,24 +225,25 @@ docker_setup()
 
 {
         docker -v
-        if [ "$(echo $?)" == "127" ]; then
-           echo "Docker is not installed. Install docker-engine"
-        else
-           echo "--------> Fetching IP address"
-           IP="$(ifconfig docker0 | grep "inet" | awk '{print $2}' | cut -d ':' -f 2)"
-           echo "Docker0 interface IP Address $IP"
-           echo "--------> Fetching PORT number"
-           PORT="$(sudo netstat -tunlp | grep docker | awk '{print $4'} | cut -d ":" -f 4)"
-           echo "Docker Interface PORT number $PORT"
+ if [ "$(echo $?)" == "127" ]; then
+        echo "Docker is not installed. Install docker-engine"
+ else
+         echo "--------> Fetching IP address"
+         IP="$(ifconfig docker0 | grep "inet" | awk '{print $2}' | cut -d ':' -f 2)"
+         echo "Docker0 interface IP Address $IP"
+         echo "--------> Fetching PORT number"
+         PORT="$(sudo netstat -tunlp | grep docker | awk '{print $4'} | cut -d ":" -f 4)"
+         echo "Docker Interface PORT number $PORT"
+           
            if [ $PORT != "2375" ]; then
               echo "DOCKER_OPTS=\"-s=aufs -r=true --api-cors-header='*' -H tcp://0.0.0.0:2375 -H unix:///var/run/docker.sock \"" > /etc/default/docker
               source /etc/default/docker
               if [ $? -ne 0 ]; then
-                 echo "error in sourcing /etc/default/docker"
+                 echo "error in sourcing /etc/default/docker... Try with sudo"
                  exit 1
               fi
               echo "Restarting Docker"
-              service docker restart
+              sudo service docker restart
               sleep 5
               PORT="$(sudo netstat -tunlp | grep docker | awk '{print $4'} | cut -d ":" -f 4)"
               if [ $PORT != "2375" ]; then
@@ -298,8 +260,8 @@ if [ "$SECURITY" == "Y" ] ; then
            membersrvc_setup $NUM_PEERS $IP $PORT
 else
            echo "--------> Spinup peer network without security and Privary"
-           docker
-           peer_setup $NUM_PEERS
+           docker_setup
+           peer_setup $NUM_PEERS $IP $PORT
 fi
 
 echo "--------> Printing list of Docker Containers"
@@ -322,7 +284,7 @@ do
         docker logs -f $CONTAINER_ID > "LOGFILE_$CONTAINER_NAME"_"$CONTAINER_ID" &
 done
 
-# Writing Peer data into a file for Go SDK
+# Writing Peer data into networkcredentails file
 
 cd $WORKDIR
 echo "creating networkcredentials file"
@@ -359,7 +321,7 @@ done
 
         echo "   ],"  >> $WORKDIR/networkcredentials
 
-# Writing UserData into a file for go SDK
+# Writing UserData into networkcredentails file
 if [ "$SECURITY" == "Y" ] ; then
 
 echo "   \"UserData\" :  [" >> $WORKDIR/networkcredentials
@@ -401,7 +363,7 @@ done
 
         echo "   ],"  >> $WORKDIR/networkcredentials
 fi
-# Writing Grpc details into networkcredential file for go SDK
+# Writing Grpc details into networkcredentials file
 echo "   \"PeerGrpc\" :  [" >> $WORKDIR/networkcredentials
         echo " "
 
