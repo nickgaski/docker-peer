@@ -1,7 +1,7 @@
 # Spinup Local Peer Network
 Purpose of this script is to **spinup "n" number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and tag number provided while executing script.
 
-# What this script does for you?
+## What this script does for you?
 
 If you want quick development environment to build and test fabric application, then don't hesitate to download this script and execute with the options provided below. Script does below tasks before it gives you network.
 
@@ -58,17 +58,18 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
    
 5. curl the below script and execute peer script to spinup "n" number of peers of your choice.
 
-   `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
-   
-   `chmod +x spinup_peer_network.sh`
-   
-   `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
+```   
+   - curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh
+   - chmod +x spinup_peer_network.sh
+   - ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
+
+```
 
 **Reference:**
 
 ![4 peer network](peers.PNG)
 
-### Useful Docker Commands:
+## Useful Docker Commands:
 
 1. Kill all containers
   - **docker rm $(docker ps -aq))** (user rm -f to force kill)
