@@ -1,9 +1,36 @@
 # Spinup Local Peer Network
-The purpose of this script is to **spinup "n" number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and commit number provided while executing script.
+Purpose of this script is to **spinup "n" number of peers** on docker environment. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and tag number provided while executing script.
 
-If the docker interface port (2375) is not assigned/configured properly, you have to execute script using "sudo" to setup DOCKER_OPTS in /etc/defaults/docker file. Script first pulls the fabric-baseimage and tag it as latest then fetches docker environment details and it fetches the membersrvc.yaml file from github (by default from master branch), it creates LOGFILE_<CONTAINERID> and "networkcredential" file.
+# What this script does for you?
 
-This script drastically reduces developer/tester time in settingup the fabric developement environment.
+If you want quick development environment to build and test fabric application, then don't hesitate to download this script and execute with the options provided below. Script does below tasks before it gives you network.
+
+   * Download base, peer and membersrvc images
+   * Fetches the docker interface port (2375)
+   * Fetches user/client credentials from membersrvc.yaml file
+   * Generate container log file and stores the data into a file LOGFILE_CONTAINER_ID
+   * Generate network credential file to store docker network details and user credentials for quick testing.
+
+Note: If the docker interface port (2375) is not assigned/configured properly, you have to execute script using "sudo" to setup DOCKER_OPTS in /etc/defaults/docker file.
+
+## USAGE:
+
+```
+./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
+
+OPTIONS:
+
+-h/? - Print a usage message
+-n   - Number of peers to launch
+-s   - Enable Security and Privacy, and start memberservices (caserver)
+-c   - Provide Specific peer and membersrvc docker image commit
+-l   - Select logging method detail level
+-m   - Select consensus mode
+-f   - Number of faulty peers allowed in a pbft network (default is max possible value (N-1)/3)
+-b   - batch size
+ Example: 
+./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft
+```
 
 Before execute **spinup_peer_network.sh** script, make sure the host system satisfies the below requirements.
 
@@ -28,34 +55,14 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
    `cd $GOPATH/src/github.com/hyperledger/fabric`
    
    `make images`
-
-# Follow below steps:
-Use below script to spinup peers on gerrit code base (works on any branch)
+   
+5. curl the below script and execute peer script to spinup "n" number of peers of your choice.
 
    `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
    
    `chmod +x spinup_peer_network.sh`
    
-   `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account]         (https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
-
-## USAGE:
-
-```
-./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
-
-OPTIONS:
-
--h/? - Print a usage message
--n   - Number of peers to launch
--s   - Enable Security and Privacy, and start memberservices (caserver)
--c   - Provide Specific peer and membersrvc docker image commit
--l   - Select logging method detail level
--m   - Select consensus mode
--f   - Number of faulty peers allowed in a pbft network (default is max possible value (N-1)/3)
--b   - batch size
- Example: 
-./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft
-```
+   `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft` (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
 
 **Reference:**
 
@@ -64,10 +71,10 @@ OPTIONS:
 ### Useful Docker Commands:
 
 1. Kill all containers
-  - **docker rm $(docker kill $(docker ps -aq))** (user rm -f to force kill)
+  - **docker rm $(docker ps -aq))** (user rm -f to force kill)
 2. Remove all exited containers
   - **docker ps -aq -f status=exited | xargs docker rm**
-3. Remove all Images except 'openblockchain/baseimage'
+3. Remove all Images except 'hyperledger/fabric-baseimage'
   - **docker rmi $(docker images | grep -v 'hyperledger/fabric-baseimage:latest' | awk {'print $3'})**
 4. Stop Docker container
   - **docker stop Container ID**
@@ -128,50 +135,3 @@ Submit Query Transaction using chaincode
 ```
 peer chaincode query -u test_user0 -n ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539 -c '{"Args": ["query", "a"]}'
 ```
-
-### Modify existing configuration settings of core.yaml in peer docker image:
-
-## 1. Pull images from DockerHub:
-
-First, pull latest peer and membersrvc images or pull specific commit docker images from [Docker Hub](https://hub.docker.com/u/hyperledger/)
-
-```
-  docker pull hyperledger/fabric-peer
-  docker pull hyperledger/fabric-membersrvc
-```
-
-Once the images are pulled from dockerhub, follow below process to modify configuration files of peer image.
-
-List out all the docker images whcih are available in your system:
-
-**docker images**
-
-```
-dev-vp3-ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539   latest                 16ae0dc9c15a        3 minutes ago       1.353 GB
-dev-vp1-ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539   latest                 7760a29b05cc        3 minutes ago       1.353 GB
-dev-vp0-ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539   latest                 49785a72adcf        3 minutes ago       1.353 GB
-dev-vp2-ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539   latest                 686ee915990b        3 minutes ago       1.353 GB
-hyperledger/fabric-baseimage                                                                                                               latest                 5073cec7e9eb        10 days ago         1.318 GB
-hyperledger/fabric-baseimage                                                                                                               x86_64-0.2.0           5073cec7e9eb        10 days ago         1.318 GB
-hyperledger/fabric-membersrvc                                                                                                              x86_64-0.6.1-preview   b3654d32e4f9        12 days ago         1.417 GB
-hyperledger/fabric-peer                                                                                                                    x86_64-0.6.1-preview   21cb00fb27f4        12 days ago         1.424 GB
-busybox                                                                                                                                    latest                 e02e811dd08f        3 weeks ago         1.093 MB
-```
-
-### 2. Run Docker Image
-
-Specify the ImageID or Imagename from the output of the above command
-
-`docker run -it <imageID> or <image name> bash`
-
-ex: `docker run -it hyperledge/fabric-peer bash` or `docker run -it 21cb00fb27f4 bash`
-
-### 3. Saving changes inside Container
-
-Above command takes you to the container, modify any file inside container ex: `core.yaml` file and press `CTRL + P + Q`. In docker, CTRL + P + Q runs the container in background mode or in detached mode and automatically exit from the container.
-
-Execute `docker ps` command to see the container running in detached mode. Take the container ID or container name and execute the below command
-
-`docker commit <ContainerID> <NewImageName>`
-
-Keep the above new Imagename in spinup_peer_network.sh script and execute the script.
