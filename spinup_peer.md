@@ -37,7 +37,7 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
    `cd $GOPATH/src/github.com/hyperledger/fabric`
    `make images`
 
-### USAGE
+### USAGE:
 
 ```
 ./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specify the tag number> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size> -t <TLS enabled/disabled)>
@@ -56,7 +56,6 @@ OPTIONS:
  Example: 
 ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t
 ```
-
 curl the below script and execute peer script to spinup "n" number of peers of your choice.
 
    `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
@@ -64,12 +63,44 @@ curl the below script and execute peer script to spinup "n" number of peers of y
    `chmod +x spinup_peer_network.sh`
    
    `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t`
+   
+After running the script successfully, *networkcredentials* file and *container LOGFILE's* are generated in the same directory.
 
-**Note:** If you don't sepecify the tag number, script executes with default value provided in the script. To launch peers with specific tag, please look into the tags for each image in hyperledger docker hub account. https://hub.docker.com/u/hyperledger/
-
+**networkcredentails file**
+```
+{
+   "PeerData" :  [
+   { "name" : "PEER0", "api-host" : "172.17.0.3", "api-port" : "7050" } ,
+   { "name" : "PEER1", "api-host" : "172.17.0.4", "api-port" : "7050" } ,
+   { "name" : "PEER2", "api-host" : "172.17.0.5", "api-port" : "7050" } ,
+   { "name" : "PEER3", "api-host" : "172.17.0.6", "api-port" : "7050" }
+   ],
+   "UserData" :  [
+   { "username" : "test_user0", "secret" : "MS9qrN8hFjlE" } ,
+   { "username" : "test_user1", "secret" : "jGlNl6ImkuDo" } ,
+   { "username" : "test_user2", "secret" : "zMflqOKezFiA" } ,
+   { "username" : "test_user3", "secret" : "vWdLCE00vJy0" }
+   ],
+   "EventPorts" :  [
+   { "api-host" : "172.17.0.3", "api-port-event" : "40001" } ,
+   { "api-host" : "172.17.0.4", "api-port-event" : "40003" } ,
+   { "api-host" : "172.17.0.5", "api-port-event" : "40005" } ,
+   { "api-host" : "172.17.0.6", "api-port-event" : "40007" }
+   ],
+   "PeerGrpc" :  [
+   { "api-host" : "172.17.0.3", "api-port" : "30001" } ,
+   { "api-host" : "172.17.0.4", "api-port" : "30003" } ,
+   { "api-host" : "172.17.0.5", "api-port" : "30005" } ,
+   { "api-host" : "172.17.0.6", "api-port" : "30007" }
+   ],
+ "Name": "spinup_peer_network"
+}
+```
 **Reference:**
 
 ![4 peer network](peers.PNG)
+
+**Note:** If you don't sepecify the tag number, script executes with default value provided in the script. To launch peers with specific tag, please look into the tags for each image in hyperledger docker hub account. https://hub.docker.com/u/hyperledger/
 
 ## Testing Chaincode in CLI mode:
 
