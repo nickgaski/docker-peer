@@ -137,4 +137,4 @@ Submit Query Transaction using chaincode
 peer chaincode query -u test_user0 -n ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539 -c '{"Args": ["query", "a"]}'
 ```
 
-You can also send REST requests from any REST based tools to any of the peers launched above.
+You can also send REST requests (Deploy, Invoke and Query) from any REST based tools to any of the peers launched above.
