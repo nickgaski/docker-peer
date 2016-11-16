@@ -3,7 +3,7 @@ Purpose of this script is to **spinup "n" number of peers** on docker environmen
 
 ## What this script does for you?
 
-If you want quick development environment to build and test fabric application, then don't hesitate to download this script and execute with the options provided below. Script does below tasks before it gives you network.
+For quick testing or development work, follow the execution commands to launch peer netowork. User host system should have docker environment up and running. Script does below tasks before it gives you network.
 
    * Download base, peer and membersrvc images
    * Fetches the docker interface port (2375)
@@ -17,19 +17,19 @@ Note: If the docker interface port (2375) is not assigned/configured properly, e
 ## USAGE:
 
 ```
-./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size> -t <y/n>
+./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specify the tag number> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size> -t <TLS enabled/disabled (y/n)>
 
 OPTIONS:
 
 -h/? - Print a usage message
--n   - Number of peers to launch
+-n   - Number of peers to launch (Default is 4)
 -s   - Enable Security and Privacy, and start memberservices (caserver)
--c   - Provide Specific peer and membersrvc docker image commit
--l   - Select logging method detail level
--m   - Select consensus mode
+-c   - Provide Specific peer and membersrvc docker image commit (default is latest)
+-l   - Select logging method detail level (Default is debug)
+-m   - Select consensus mode (Default is pbft)
 -f   - Number of faulty peers allowed in a pbft network (default is max possible value (N-1)/3)
--b   - batch size
--t   - Enable TLS
+-b   - batch size (Default is 500)
+-t   - Enable TLS (default is disabled)
  Example: 
 ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t y
 ```
@@ -50,21 +50,20 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
    
    `iptables -D INPUT 4` (ex: to delete Reject rules from INPUT policy. 4 is the row number to delete)
  
-4. If you do not want to build images manually, skip this step and simply take the image name for the specific commit from above mentioned docker hub account. Build peer and membersrvc images using makefile and provide the image name and commit number in spinup_peer_network.sh script.
-
- Move to directory where the makefile is located (root of the fabric directory)
-
+4. If you do not want to build images manually, skip this step and simply take the image name and specific tag from above mentioned docker hub account. If you wish to build peer and membersrvc images natively and provide the image name and tag number in spinup_peer_network.sh script. Move to directory where the makefile is located (root of the fabric directory)
+   
    `cd $GOPATH/src/github.com/hyperledger/fabric`
-   
    `make images`
-   
+
 5. curl the below script and execute peer script to spinup "n" number of peers of your choice.
 
    `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
+   
    `chmod +x spinup_peer_network.sh`
+   
    `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t y`
 
-Note: If you don't sepecify the commit number, script executes with default values provided in the script. To launch peers with specific tag, please look into the tags for each image in hyperledger docker hub account. https://hub.docker.com/u/hyperledger/
+**Note:** If you don't sepecify the commit number, script executes with default values provided in the script. To launch peers with specific tag, please look into the tags for each image in hyperledger docker hub account. https://hub.docker.com/u/hyperledger/
 
 **Reference:**
 
@@ -137,3 +136,5 @@ Submit Query Transaction using chaincode
 ```
 peer chaincode query -u test_user0 -n ee5b24a1f17c356dd5f6e37307922e39ddba12e5d2e203ed93401d7d05eb0dd194fb9070549c5dc31eb63f4e654dbd5a1d86cbb30c48e3ab1812590cd0f78539 -c '{"Args": ["query", "a"]}'
 ```
+
+You can also send REST requests from any REST based tools to any of the peers launched above.
