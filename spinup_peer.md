@@ -60,11 +60,11 @@ Before execute **spinup_peer_network.sh** script, make sure the host system sati
    
 5. curl the below script and execute peer script to spinup "n" number of peers of your choice.
 
-```
-   curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh
-   chmod +x spinup_peer_network.sh
-   ./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft (Check here [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) for gerrit commit tags)
-```
+   `curl -L https://raw.githubusercontent.com/hyperledger/fabric/scripts/spinup_peer_network.sh -o spinup_peer_network.sh`
+   `chmod +x spinup_peer_network.sh`
+   `./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t y`
+
+Note: If you don't sepecify the commit number, script executes with default values provided in the script. To launch peers with specific tag, please look into the tags for each image in hyperledger docker hub account. https://hub.docker.com/u/hyperledger/
 
 **Reference:**
 
