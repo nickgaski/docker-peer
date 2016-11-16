@@ -8,15 +8,16 @@ If you want quick development environment to build and test fabric application, 
    * Download base, peer and membersrvc images
    * Fetches the docker interface port (2375)
    * Fetches user/client credentials from membersrvc.yaml file
-   * Generate container log file and stores the data into a file LOGFILE_CONTAINER_ID
-   * Generate network credential file to store docker network details and user credentials for quick testing.
+   * Spinsup number of peers specified
+   * Generate container log files for each container. In the current working directory display log file names as LOGFILE_CONTAINER_ID
+   * Generate network credential file to store peer network details and user credentials for quick testing.
 
-Note: If the docker interface port (2375) is not assigned/configured properly, you have to execute script using "sudo" to setup DOCKER_OPTS in /etc/defaults/docker file.
+Note: If the docker interface port (2375) is not assigned/configured properly, execute script using "sudo" to setup DOCKER_OPTS in /etc/defaults/docker file.
 
 ## USAGE:
 
 ```
-./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size>
+./spinup_peer_network.sh -n <number of peers, N> -s <security and privacy enabled) -c <specific Commit> -l <Logging level> -m <consensus Mode> -f <number of faulty peers, F> -b <batch size> -t <y/n>
 
 OPTIONS:
 
@@ -28,8 +29,9 @@ OPTIONS:
 -m   - Select consensus mode
 -f   - Number of faulty peers allowed in a pbft network (default is max possible value (N-1)/3)
 -b   - batch size
+-t   - Enable TLS
  Example: 
-./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft
+./spinup_peer_network.sh -n 4 -s -c x86_64-0.6.1-preview -l debug -m pbft -t y
 ```
 
 Before execute **spinup_peer_network.sh** script, make sure the host system satisfies the below requirements.
