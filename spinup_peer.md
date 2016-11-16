@@ -3,7 +3,9 @@ Purpose of this script is to **spinup "n" number of peers** on docker environmen
 
 ## What this script does for you?
 
-For quick testing or development work, follow the execution commands to launch peer netowork. User host system should have docker environment up and running. Script does below tasks before it gives you network.
+For quick testing on peer network or to perform any development work based on docker containers, follow the execution commands listed below to launch peer netowork. As a pre-condition, user host system should have docker environment up and running. 
+
+Script does below tasks before it gives you network.
 
    * Download base, peer and membersrvc images
    * Fetches the docker interface port (2375)
