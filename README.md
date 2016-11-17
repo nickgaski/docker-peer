@@ -2,4 +2,7 @@
    
  * Use spinup_peer_network.sh to launch fabric peer network on docker containers. Go through the `spinup_peer.md` 
     document on uasage of peer network.
-# 2.    
+    
+# 2.
+
+# 3.
