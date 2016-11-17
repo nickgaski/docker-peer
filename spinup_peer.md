@@ -1,5 +1,5 @@
 # Spin up Local Peer Network
-Purpose of this script is to **spin up "n" number of peers** in a docker environment, each in it's own container. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and image tag number provided while executing script.
+Purpose of this script is to **spin up "n" number of peers** in a docker environment, each in its own container. This script pulls fabric-baseimage, peer and membersrvc images from [Hyperledger Docker hub account](https://hub.docker.com/u/hyperledger/) based on the ARCH value and image tag number provided while executing script.
 
 ## What this script does:
 
