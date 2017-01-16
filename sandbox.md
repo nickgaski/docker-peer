@@ -27,12 +27,14 @@ jenkins-jobs test --recursive jjb/
 ### Make a copy of the example JJB config file (in the builder/ directory)
 
 `cd ci-management`
+
 take a backup of jenkins.ini.example to jenkins.ini
+
 `cp jenkins.ini.example jenkins.ini`
 
 After take a backup of jenkins.ini, modify jenkins.ini with the following details
 
-**Note:** Update `jenkins.ini` file with your Jenkins username, API token and Hyperledger sandbox URL
+**Note:** Update `jenkins.ini` file with your **Jenkins LFID username**, **API token** and **Hyperledger jenkins sandbox URL**
 
 ```
 [job_builder]
