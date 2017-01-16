@@ -25,7 +25,6 @@ Get the below command from **ci-management** project in [Gerrit Projects](https:
 
 The Jenkins-sandbox purpose is to allow projects to test their JJB setups before submitting their code over to the hyperledger ci-management repository. Hyperledger Jenkins Sandbox environement is configured similarly to the production instance, although it cannot vote in Gerrit. [Jenkins Sandbox Process] (link)
 
-
 Below is the process following for each repository:
 
 ##Fabric: 
@@ -40,7 +39,7 @@ Once the build is successfully executed, user should be able to view build resul
 
 ###Trigger Builds through commits:
 
-re-verification of builds in possible in Jenkins. Developer has to type **reverify** or **recheck** in gerrit commit. Follow the below process to do this.
+re-verification of builds is possible in Jenkins. Developer has to type **reverify** or **recheck** in gerrit commit. Follow the below process to do this.
 
 Step 1: Open gerrit commit for which you want to reverify or recheck the build
 
