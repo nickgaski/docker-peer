@@ -6,11 +6,11 @@ Hyperledger Jenkins Sandbox is to provide test instance of Jenkins Job builders 
 - Committers can login and configure Jenkins jobs in the sandbox directly
 - Sandbox jobs can NOT upload build images to docker hub 
 - Sandbox jobs can NOT vote on Gerrit
-- Jenkins nodes are configured using Hyperledger openstack infrastructure. Users have to 
+- Jenkins nodes are configured using Hyperledger openstack infrastructure.
 
-create Jenkins jobs and execute them to create jobs Sandbox environment. Users of Hyperledger Jenkins follow below process .  
+Create Jenkins jobs and execute them in Sandbox environment. If you don't have gerrit account follow the steps mentioned here [**Gerrit**](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account/)
 
-If you don't have ci-management Jenkins Configuration repository please perform git clone from here [ci-management](https://gerrit.hyperledger.org/r/#/admin/projects/ci-management)
+If you don't have ci-management Jenkins Configuration repository please perform git clone from here **[ci-management]**(https://gerrit.hyperledger.org/r/#/admin/projects/ci-management)
 
 `git clone ssh://<LFID>@gerrit.hyperledger.org:29418/ci-management && scp -p -P 29418 <LFID>@gerrit.hyperledger.org:hooks/commit-msg ci-management/.git/hooks/`
 
@@ -26,15 +26,39 @@ jenkins-jobs test --recursive jjb/
 ```
 ### Make a copy of the example JJB config file (in the builder/ directory)
 
+`cd ci-management`
+take a backup of jenkins.ini.example to jenkins.ini
 `cp jenkins.ini.example jenkins.ini`
+
+After take a backup of jenkins.ini, modify jenkins.ini with the following details
 
 **Note:** Update `jenkins.ini` file with your Jenkins username, API token and Hyperledger sandbox URL
 
-That's now create or modify existing job templates and follow below commands to test, update or delete jobs in Sandbox environment
+```
+[job_builder]
+ignore_cache=True
+keep_descriptions=False
+include_path=.:scripts:~/git/
+recursive=True
+
+[jenkins]
+#user=jenkins
+#password=1234567890abcdef1234567890abcdef
+#url=http://localhost:8080
+user=rameshthoomu <<your LFID username>
+password=bbb779809e4669a013b627abca175ed7 <your LFID jenkins sandbox API Token>
+url=https://jenkins.hyperledger.org/sandbox 
+##### This is deprecated, use job_builder section instead
+#ignore_cache=True
+```
+###How to get API token?
+Login to the Jenkins Sandbox environment, go to your user page by clicking on your username, click “Configure” and then “Show API Token”.
+
+Now create or modify existing job templates and follow below commands to test, update or delete jobs in Sandbox environment
 
 ##To Test a Job: 
 
-After you modify or create jobs in the above environment it's a good practice to test the job before you update this job in Sandbox environment
+After you modify or create jobs in the above environment it's a good practice to test the job before you update this job in Sandbox environment. 
 
 `cd ci-management`
 
@@ -45,6 +69,10 @@ After you modify or create jobs in the above environment it's a good practice to
 If the job you’d like to test is a template with variables in its name, it must be manually expanded before use. For example, the commonly used template **fabric-verify-{arch}** might expand to **fabric-verify-x86-64**
 
 Successful tests output the XML description of the Jenkins job described by the specified JJB job name.
+
+Execute the following command to pipeout to a directory
+
+`jenkins-jobs --conf jenkins.ini test jjb/ <job-name> -o <directoryname>` The output directory will contain files with the XML configurations.
 
 ##To Update a Job:
 
@@ -66,6 +94,16 @@ Step 3: Verify the "Build Executor Status" bar and make sure build is triggered 
 
 Once the Job is triggered, click on the build number to see all the details about the job and view the console output.
 
-##Modify Existing Job:
+## To Delete a Job:
+
+Execute the below command to Delete a job from Sandbox:
+
+`jenkins-jobs --conf jenkins.ini delete jjb/ <job-name>`
+
+**Example** `jenkins-jobs --conf jenkins.ini delete jjb/ fabric-verify-x86_64`
+
+Above command deletes the **fabric-verify-x86-64**
+
+## Modify Existing Job:
 
 In Hyperledger Jenkins sandbox, you can directly edit or modify the job configuration by selecting the Job name and click on "Configure" button. Click on "Apply" and "Save" button to save the Job. But As we are using JJB to create and publish jobs, better to use the same approach to "Modify" the Jobs. Modify the existing job on your terminal, and follow the steps mentioned above in **To Test a Job** and **To Update a Job**
