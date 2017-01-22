@@ -16,6 +16,8 @@ Get the below command from **ci-management** project in [Gerrit Projects](https:
 
 `git clone http://<LFID>@gerrit.hyperledger.org/r/a/ci-management`
 
+![CI-Process](Jenkins_ci.PNG)
+
 ##Jenkins Sandbox Process:
 
 The Linux Foundation Jenkins Sandbox purpose is to allow projects to test developers JJB setups before submitting code to the hyperledger ci-management repository. Hyperledger Jenkins Sandbox environment is configured similar to the production environment, although it cannot vote in Gerrit. To use Sandbox Jenkins, please follow this link [Jenkins Sandbox Process] (link)
