@@ -56,13 +56,11 @@ url=https://jenkins.hyperledger.org/sandbox
 ###How to get API token?
 Login to the Jenkins Sandbox environment, go to your user page by clicking on your username, click “Configure” and then “Show API Token”.
 
-Now create or modify existing job templates and follow below commands to test, update or delete jobs in Sandbox environment
+You can see all projects job templates in jjb directory. To work on existing or create new jobs in `jjb` directory. Follow below commands to test, update or delete jobs in Sandbox environment.
 
 ##To Test a Job: 
 
 After you modify or create jobs in the above environment it's a good practice to test the job before you update this job in Sandbox environment. 
-
-`cd ci-management`
 
 `jenkins-jobs --conf jenkins.ini test jjb/ <job-name>`
 
