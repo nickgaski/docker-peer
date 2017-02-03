@@ -1,6 +1,6 @@
-##Jenkins Sandbox:
+##Hyperledger Jenkins Sandbox Process:
 
-Hyperledger Jenkins Sandbox is to provide test instance of Jenkins Job builders before pushing Job templates to Production Jenkins UI. It is configured similar to the Hyperledger ci-management master instance, although it cannot publish artifacts or vote in Gerrit. This is just a test environment to create and test before you push changes to hyperledger fabric repository. Below are the points keep in mind before you work on Hyperledger Jenkins Sandbox environment for your experimental stuff.
+Hyperledger Jenkins Sandbox is to provide test instance of Jenkins Job builders before pushing Job templates to Production Jenkins UI. It is configured similar to the Hyperledger [ci-management](https://gerrit.hyperledger.org/r/gitweb?p=ci-management.git;a=tree;h=refs/heads/master;hb=refs/heads/master) master instance, although it cannot publish artifacts or vote in Gerrit. This is a test environment with limited minions to test on before you push changes to hyperledger fabric repository. Below are the points to keep in mind before you work on Hyperledger Jenkins Sandbox environment for your experimental stuff.
 
 - Jobs are automatically deleted every weekend
 - Committers can login and configure Jenkins jobs in the sandbox directly
@@ -8,15 +8,16 @@ Hyperledger Jenkins Sandbox is to provide test instance of Jenkins Job builders 
 - Sandbox jobs can NOT vote on Gerrit
 - Jenkins nodes are configured using Hyperledger openstack infrastructure.
 
-Create Jenkins jobs and execute them in Sandbox environment. If you don't have gerrit account follow the steps mentioned here [**Gerrit**](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account/)
+Use this environment to create and execute Jenkins jobs. Before you procced further, please you have access in lfaccount (LFID) to access Gerrit. If you don't have gerrit account follow the steps mentioned here [**Gerrit**](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account/) to get an account.
 
-If you don't have ci-management Jenkins Configuration repository please perform git clone from here **[ci-management]**(https://gerrit.hyperledger.org/r/#/admin/projects/ci-management)
+To download ci-management, execute below git clone command to download **ci-managment** repository.
 
 `git clone ssh://<LFID>@gerrit.hyperledger.org:29418/ci-management && scp -p -P 29418 <LFID>@gerrit.hyperledger.org:hooks/commit-msg ci-management/.git/hooks/`
 
 ###Follow below steps to install JJB in your machine:
 
 ```
+cd ci-management
 sudo apt-get install python-virtualenv
 virtualenv hyp
 source hyp/bin/activate
@@ -25,8 +26,6 @@ jenkins-jobs --version
 jenkins-jobs test --recursive jjb/
 ```
 ### Make a copy of the example JJB config file (in the builder/ directory)
-
-`cd ci-management`
 
 take a backup of jenkins.ini.example to jenkins.ini
 
