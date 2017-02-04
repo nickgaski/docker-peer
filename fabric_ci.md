@@ -26,7 +26,7 @@ Continuous Integration process using Jenkins CI server is implemented for all th
 
 ##Fabric: 
 
-When a user submits a commit to **[fabric]**(https://gerrit.hyperledger.org/r/#/admin/projects/fabric) repository, Hyperledger Community Jenkins triggers verify jobs on *x86_64, s390x and ppc64le* environments 
+When a user submits a commit to [fabric](https://gerrit.hyperledger.org/r/#/admin/projects/fabric) repository, Hyperledger Community Jenkins triggers verify jobs on *x86_64, s390x and ppc64le* environments 
 
   - [fabric-verify-x86_64](https://jenkins.hyperledger.org/view/fabric/job/fabric-verify-x86_64/)
   - [fabric-verify-s390x](https://jenkins.hyperledger.org/view/fabric/job/fabric-verify-z/)
