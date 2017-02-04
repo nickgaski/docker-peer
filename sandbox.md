@@ -8,13 +8,15 @@ Hyperledger Jenkins Sandbox is to provide test instance of Jenkins Job builders 
 - Sandbox jobs can NOT vote on Gerrit
 - Jenkins nodes are configured using Hyperledger openstack infrastructure.
 
-Use this environment to create and execute Jenkins jobs. Before you procced further, please you have access in lfaccount (LFID) to access Gerrit. If you don't have gerrit account follow the steps mentioned here [**Gerrit**](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account/) to get an account.
+Use this environment to create and execute Jenkins jobs. Before you procced further, you should have **lfaccount** account (LFID) to access Gerrit. If you don't have gerrit account follow the steps mentioned here [**Gerrit**](http://hyperledger-fabric.readthedocs.io/en/latest/Gerrit/lf-account/) to get an account.
 
-To download ci-management, execute below git clone command to download **ci-managment** repository.
+To download **ci-management**, execute below git clone command to download **ci-managment** repository.
 
-`git clone ssh://<LFID>@gerrit.hyperledger.org:29418/ci-management && scp -p -P 29418 <LFID>@gerrit.hyperledger.org:hooks/commit-msg ci-management/.git/hooks/`
+`git clone ssh://<LFID>@gerrit.hyperledger.org:29418/ci-management && scp -p -P 29418 <LFID>@gerrit.hyperledger.org:hooks/commit-msg ci-management/.git/hooks/` 
 
-###Follow below steps to install JJB in your machine:
+Once repository is cloned succcesfully, next step is to install JJB to play with jenkins jobs.
+
+###Follow below steps to install JJB (Jenkins Job Builder) in your machine:
 
 ```
 cd ci-management
