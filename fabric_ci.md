@@ -1,4 +1,4 @@
-#CI-Management:
+# Hyperledger CI Process:
 
 This repository contains CI Configuration for all repositories including fabric, fabric-cop, fabric-sdk-node, fabric-api,  fabric-busybox,  fabric-sdk-py,  fabric-baseimage and  fabric-sdk-java. All the CI configuration is prepared in Jenkins job builders to create Jenkins Jobs.
 
